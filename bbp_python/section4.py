@@ -16,9 +16,9 @@ Coefficients (A10, A12, A13)
     b2 = 1
     b0 = Rf * (W1 + alpha) - Xs * P * Rf - Xb           (rewriting (A10))
 
-    tau_uS_bar = tau_uS + (b2 / b1)**2 * tau_uB        (A3)
+    tau_uS_bar = tau_uS + (b1 / b2)**2 * tau_uB        (A3, equiv. eq 13)
     mu_uS_bar  = (1 / tau_uS_bar) * (b1**2 / b2**2) * tau_uB * (- b0 / b1)
-               = (tau_uB / tau_uS_bar) * (- b0 / b1)
+               = ((b1 / b2)**2 * tau_uB / tau_uS_bar) * (- b0 / b1)
                (= 0 in equilibrium because b0 = 0; see below)
 
     tau = tau_F + tau_eps + (a1 / a2)**2 * tau_uS_bar    (A4)
@@ -92,7 +92,7 @@ def solve_section4(p: Params) -> EqIV:
         b2 = 1.0
         b0 = 0.0  # by construction
 
-        tau_uS_bar = p.tau_uS + (b2 / b1) ** 2 * p.tau_uB
+        tau_uS_bar = p.tau_uS + (b1 / b2) ** 2 * p.tau_uB
         mu_uS_bar = (p.tau_uB / tau_uS_bar) * (b2 / b1) * (- b0 / b1) * b1
         # simplifies to 0 when b0 = 0
 

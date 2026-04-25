@@ -13,11 +13,13 @@ gap is explicit.
 from .params import BASELINE
 from .section4 import solve_section4, public_info_R2
 from .section5_det import solve_section5_deterministic
+from .section5_symm import solve_section5_symmetric
 
 
 def main() -> None:
     eq4 = solve_section4(BASELINE)
     eq5 = solve_section5_deterministic(BASELINE)
+    eq5s = solve_section5_symmetric(BASELINE)
 
     print("=" * 72)
     print("BBP (Breugem-Buss-Peress 2022) -- Python translation, status report")
@@ -33,10 +35,21 @@ def main() -> None:
     print("Section V (full model, NS=Npi=1 deterministic mean-state limit):")
     print(f"  Rf            = {eq5.Rf:.12f}    PY = {eq5.PY:.12f}")
     print(f"  PX            = {eq5.PX:.12f}")
-    print(f"  I             = {eq5.I:.12f}")
-    print(f"  X, Y          = {eq5.X:.6f}, {eq5.Y:.6f}")
-    print(f"  C1, C2        = {eq5.C1:.12f}, {eq5.C2:.12f}")
+    print(f"  C1            = {eq5.C1:.12f}    (cf. Out[435] = 1.823268337170934)")
     print(f"  FOC residual  = {eq5.residual:.3e}")
+    print()
+    print("Section V (symmetric-info noisy, full prior risk, mean state):")
+    print(f"  Rf            = {eq5s.Rf:.12f}    PY = {eq5s.PY:.12f}")
+    print(f"  PX            = {eq5s.PX:.12f}    (risk-premium = {eq5s.risk_premium:.4f})")
+    print(f"  C1            = {eq5s.C1:.12f}    (cf. Out[435] = 1.823268337170934)")
+    print(f"  residual      = {max(abs(r) for r in eq5s.residual):.3e}")
+    print()
+    print("Bracketing of Out[435] = 1.823268:")
+    print(f"  no risk           (deterministic) -> C1 = {eq5.C1:.6f}")
+    print(f"  full prior risk   (symmetric-info)-> C1 = {eq5s.C1:.6f}")
+    print(f"  REE with learning (Mathematica)    -> C1 = 1.823268")
+    frac = (eq5.C1 - 1.823268337170934) / (eq5.C1 - eq5s.C1)
+    print(f"  -> learning closes ~{(1-frac)*100:.0f}% of the prior-risk gap")
 
     print()
     print("Mathematica reference values (1 Baseline (1).nb -- full Section V):")
