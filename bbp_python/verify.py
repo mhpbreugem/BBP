@@ -12,12 +12,16 @@ gap is explicit.
 
 from .params import BASELINE
 from .section4 import solve_section4, public_info_R2
+from .section4_noisy import solve_at_baseline as solve4_noisy
+from .section4_grid import grid_R2_public
 from .section5_det import solve_section5_deterministic
 from .section5_symm import solve_section5_symmetric
 
 
 def main() -> None:
     eq4 = solve_section4(BASELINE)
+    eq4n = solve4_noisy(BASELINE)
+    grid = grid_R2_public(BASELINE, n_z=43, n_uS=3, n_uB=15)
     eq5 = solve_section5_deterministic(BASELINE)
     eq5s = solve_section5_symmetric(BASELINE)
 
@@ -25,12 +29,20 @@ def main() -> None:
     print("BBP (Breugem-Buss-Peress 2022) -- Python translation, status report")
     print("=" * 72)
     print()
-    print("Section IV (simplified, exogenous Gaussian payoff) closed-form:")
+    print("Section IV closed-form (linearised, mean-state):")
     print(f"  Rf            = {eq4.Rf:.12f}")
-    print(f"  E[P]          = {eq4.P_const + eq4.P_F * BASELINE.mu_F_section4:.12f}")
-    print(f"  a0, a1, a2    = {eq4.a0:.6f}, {eq4.a1:.6f}, {eq4.a2:.6f}")
-    print(f"  b0, b1, b2    = {eq4.b0:.6f}, {eq4.b1:.6f}, {eq4.b2:.6f}")
     print(f"  R^2 (public)  = {public_info_R2(BASELINE, eq4):.12f}")
+    print()
+    print("Section IV state-by-state at (z=u^S=u^B=0):")
+    print(f"  P             = {eq4n.P:.12f}")
+    print(f"  Rf            = {eq4n.Rf:.12f}")
+    print(f"  R^2 (priv+pub)= {eq4n.R2_full:.12f}")
+    print(f"  R^2 (public)  = {eq4n.R2_public:.12f}")
+    print()
+    print("Section IV grid-integrated (43x3x15 Gauss-Hermite):")
+    print(f"  E[Var(F|pub)] = {grid['E[Var(F|pub)]']:.12f}")
+    print(f"  R^2 (public)  = {grid['R2_public_grid']:.12f}    (cf. Out[377] = 0.5101784)")
+    print(f"  E[F|pub] avg  = {grid['EF_pub_avg']:.12f}    (cf. Out[378] = 1.0375310)")
     print()
     print("Section V (full model, NS=Npi=1 deterministic mean-state limit):")
     print(f"  Rf            = {eq5.Rf:.12f}    PY = {eq5.PY:.12f}")
