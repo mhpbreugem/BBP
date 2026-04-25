@@ -12,25 +12,31 @@ gap is explicit.
 
 from .params import BASELINE
 from .section4 import solve_section4, public_info_R2
+from .section5_det import solve_section5_deterministic
 
 
 def main() -> None:
-    eq = solve_section4(BASELINE)
+    eq4 = solve_section4(BASELINE)
+    eq5 = solve_section5_deterministic(BASELINE)
 
     print("=" * 72)
     print("BBP (Breugem-Buss-Peress 2022) -- Python translation, status report")
     print("=" * 72)
     print()
     print("Section IV (simplified, exogenous Gaussian payoff) closed-form:")
-    print(f"  Rf            = {eq.Rf:.12f}")
-    print(f"  E[P]          = {eq.P_const + eq.P_F * BASELINE.mu_F_section4:.12f}")
-    print(f"  P coefs       = const {eq.P_const:.6f},  F {eq.P_F:.6f},  uS {eq.P_uS:.6f}")
-    print(f"  a0, a1, a2    = {eq.a0:.6f}, {eq.a1:.6f}, {eq.a2:.6f}")
-    print(f"  b0, b1, b2    = {eq.b0:.6f}, {eq.b1:.6f}, {eq.b2:.6f}")
-    print(f"  tau           = {eq.tau:.6f}")
-    print(f"  tau_uS|sB     = {eq.tau_uS_bar:.6f}")
-    print(f"  PI            = {eq.PI:.6f}")
-    print(f"  R^2 (public)  = {public_info_R2(BASELINE, eq):.12f}")
+    print(f"  Rf            = {eq4.Rf:.12f}")
+    print(f"  E[P]          = {eq4.P_const + eq4.P_F * BASELINE.mu_F_section4:.12f}")
+    print(f"  a0, a1, a2    = {eq4.a0:.6f}, {eq4.a1:.6f}, {eq4.a2:.6f}")
+    print(f"  b0, b1, b2    = {eq4.b0:.6f}, {eq4.b1:.6f}, {eq4.b2:.6f}")
+    print(f"  R^2 (public)  = {public_info_R2(BASELINE, eq4):.12f}")
+    print()
+    print("Section V (full model, NS=Npi=1 deterministic mean-state limit):")
+    print(f"  Rf            = {eq5.Rf:.12f}    PY = {eq5.PY:.12f}")
+    print(f"  PX            = {eq5.PX:.12f}")
+    print(f"  I             = {eq5.I:.12f}")
+    print(f"  X, Y          = {eq5.X:.6f}, {eq5.Y:.6f}")
+    print(f"  C1, C2        = {eq5.C1:.12f}, {eq5.C2:.12f}")
+    print(f"  FOC residual  = {eq5.residual:.3e}")
 
     print()
     print("Mathematica reference values (1 Baseline (1).nb -- full Section V):")
